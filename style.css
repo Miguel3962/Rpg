@@ -1,0 +1,247 @@
+body{
+background:
+radial-gradient(circle at top,#1a1a1a,#050505);
+color:#f5f5f5;
+font-family:Georgia,serif;
+margin:0;
+text-align:center;
+}
+
+/* TÍTULO */
+
+h1{
+color:gold;
+text-shadow:0 0 15px gold;
+margin-top:15px;
+}
+
+/* CONTAINER */
+
+.container{
+width:360px;
+margin:auto;
+background:linear-gradient(180deg,#1f1f1f,#141414);
+padding:18px;
+border-radius:14px;
+box-shadow:
+0 0 30px rgba(0,0,0,0.8),
+inset 0 0 10px #000;
+}
+
+/* MENU */
+
+.menu{
+display:flex;
+justify-content:space-between;
+margin-bottom:12px;
+}
+
+.menu button{
+flex:1;
+margin:3px;
+padding:9px;
+border:none;
+border-radius:8px;
+background:linear-gradient(#9b6b2f,#6e4619);
+color:white;
+font-weight:bold;
+cursor:pointer;
+transition:.25s;
+box-shadow:0 3px 6px black;
+}
+
+.menu button:hover{
+transform:translateY(-2px);
+background:linear-gradient(#b8833c,#8a5924);
+}
+
+/* TELAS */
+
+.tela{display:none;}
+.ativa{display:block;}
+
+/* STATUS AREA */
+
+.status-area{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+}
+
+/* ATRIBUTOS */
+
+.stats{
+text-align:left;
+font-size:14px;
+background:#111;
+padding:10px;
+border-radius:10px;
+box-shadow:inset 0 0 10px black;
+}
+
+/* INVENTÁRIO */
+
+#inventario{
+margin-top:5px;
+font-size:13px;
+color:#ddd;
+}
+
+/* BARRAS RPG */
+
+.barra{
+background:#222;
+height:16px;
+border-radius:10px;
+overflow:hidden;
+margin:6px 0;
+box-shadow:inset 0 0 8px black;
+}
+
+#xpBar{
+background:linear-gradient(90deg,gold,orange);
+height:100%;
+}
+
+#vidaJogadorBar{
+background:linear-gradient(90deg,#22c55e,#16a34a);
+height:100%;
+}
+
+#energiaBar{
+background:linear-gradient(90deg,#38bdf8,#0ea5e9);
+height:100%;
+}
+
+#vidaMonstroBar{
+background:linear-gradient(90deg,#ef4444,#b91c1c);
+height:100%;
+}
+
+/* BOTÕES GERAIS */
+
+button{
+margin-top:6px;
+padding:8px;
+border:none;
+border-radius:8px;
+background:#7c4a1c;
+color:white;
+cursor:pointer;
+font-weight:bold;
+transition:.2s;
+}
+
+button:hover{
+background:#a4652a;
+transform:scale(1.04);
+}
+
+/* LOG RPG */
+
+.log{
+background:#0b0b0b;
+height:130px;
+overflow:auto;
+padding:10px;
+border-radius:10px;
+text-align:left;
+font-size:13px;
+box-shadow:inset 0 0 12px black;
+}
+
+/* GRÁFICO */
+
+canvas{
+background:#0e0e0e;
+border-radius:12px;
+padding:5px;
+box-shadow:inset 0 0 15px black;
+}
+.pet-card{
+background:#222;
+margin:8px 0;
+padding:8px;
+border-radius:8px;
+border:1px solid #444;
+}
+
+.pet-header{
+cursor:pointer;
+font-weight:bold;
+}
+
+.pet-info{
+margin-top:8px;
+background:#111;
+padding:8px;
+border-radius:6px;
+}
+
+.pet-img{
+width:80px;
+border-radius:6px;
+margin-bottom:6px;
+}
+.pet-card{
+background:#222;
+margin:10px 0;
+padding:10px;
+border-radius:8px;
+border:1px solid #555;
+}
+
+.pet-img{
+width:120px;
+border-radius:8px;
+margin-top:8px;
+display:block;
+}
+
+.pet-header{
+cursor:pointer;
+font-weight:bold;
+}
+
+.pet-info{
+margin-top:8px;
+background:#111;
+padding:8px;
+border-radius:6px;
+}
+.pet-card{
+background:#1a1a1a;
+padding:8px;
+margin:8px 0;
+border-radius:8px;
+}
+
+.pet-header{
+cursor:pointer;
+font-weight:bold;
+}
+
+.pet-info{
+margin-top:8px;
+text-align:center;
+}
+
+.pet-img{
+width:80px;
+margin:5px;
+}
+
+.delete-pet{
+margin-top:6px;
+background:#8b0000;
+color:white;
+border:none;
+padding:6px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.delete-pet:hover{
+background:red;
+}

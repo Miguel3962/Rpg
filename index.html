@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vida RPG</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>⚔️ Vida RPG</h1>
+
+<div class="container">
+
+<div class="menu">
+<button onclick="abrirTela('status')">📊 Status</button>
+<button onclick="abrirTela('monstros')">⚔️ Monstros</button>
+<button onclick="abrirTela('loja')">🏪 Loja</button>
+<button onclick="abrirTela('logTela')">📜 Log</button>
+<button onclick="abrirTela('pets')">🐾 Pets</button>
+</div>
+
+<!-- STATUS -->
+<div id="status" class="tela ativa">
+
+<h2 id="nome">Herói</h2>
+<p>Nível: <span id="nivel">1</span></p>
+
+<div class="barra"><div id="xpBar"></div></div>
+
+<div class="status-area">
+
+<canvas id="graficoAtributos" width="220" height="220"></canvas>
+
+<div class="stats">
+<p>Ataque: <span id="forca">0</span></p>
+<p>inteligencia: <span id="inteligencia">0</span></p>
+<p>Carisma: <span id="carisma">0</span></p>
+<p>OURO: <span id="ouro">0</span></p>
+
+<hr>
+
+<h4>🎒 Inventário</h4>
+<div id="inventario"></div>
+
+</div>
+
+</div>
+
+<p>❤️ Vida</p>
+<div class="barra"><div id="vidaJogadorBar"></div></div>
+
+<p>⚡ Energia</p>
+<div class="barra"><div id="energiaBar"></div></div>
+
+</div>
+
+<!-- MONSTROS -->
+<div id="monstros" class="tela">
+
+<p id="monstroNome">Nenhum monstro</p>
+
+<div class="barra">
+<div id="vidaMonstroBar"></div>
+</div>
+
+<p>Vida: <span id="vidaMonstro">0</span></p>
+
+<button onclick="gerarMonstro()">Procurar</button>
+<button onclick="atacar()">Atacar</button>
+
+<hr>
+
+<button onclick="missao('estudar')">📚 Estudar</button>
+<button onclick="missao('treinar')">🏋️ Treinar</button>
+<button onclick="missao('social')">🗣️ Socializar</button>
+
+</div>
+
+<!-- LOJA -->
+<div id="loja" class="tela">
+<h3>🏪 Loja do Dia</h3>
+<div id="itensLoja"></div>
+</div>
+
+<!-- ================= PETS ================= -->
+<div id="pets" class="tela">
+
+<h3>🐾 Seus Pets</h3>
+
+<button onclick="comprarOvo()">🐣 Comprar Ovo (100 ouro)</button>
+
+<hr>
+
+<div id="listaPets"></div>
+
+<div id="pets" class="tela">
+
+<h3>🐾 Seus Pets</h3>
+
+<button onclick="abrirOvo()">🥚 Comprar Ovo (100 ouro)</button>
+
+<hr>
+
+<div id="listaPets"></div>
+
+</div>
+<!-- LOG -->
+<div id="logTela" class="tela">
+<div id="log" class="log"></div>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
