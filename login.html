@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Vida RPG - Login</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at center,#111 0%,#000 100%);
+  font-family:Georgia, serif;
+  color:white;
+}
+
+.card{
+  background:linear-gradient(180deg,#1c1c1c,#0f0f0f);
+  padding:45px;
+  border-radius:20px;
+  width:380px;
+  box-shadow:0 0 40px rgba(0,0,0,0.9);
+  border:2px solid #8b5a2b;
+  text-align:center;
+}
+
+h1{
+  color:gold;
+  text-shadow:0 0 10px gold;
+  margin-bottom:30px;
+  font-size:32px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:8px;
+  border:1px solid #444;
+  background:#0f0f0f;
+  color:white;
+  font-size:14px;
+}
+
+input:focus{
+  outline:none;
+  border:1px solid gold;
+  box-shadow:0 0 10px gold;
+}
+
+.password-box{
+  position:relative;
+}
+
+.eye{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:gold;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  font-size:15px;
+  background:linear-gradient(180deg,#b87333,#8b5a2b);
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 15px #b87333;
+}
+
+.toggle{
+  margin-top:18px;
+  cursor:pointer;
+  color:gold;
+  font-size:14px;
+}
+
+.toggle:hover{
+  text-decoration:underline;
+}
+
+.msg{
+  margin-top:12px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.erro{
+  color:#ff4d4d;
+}
+
+.sucesso{
+  color:#4ade80;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>⚔ Vida RPG ⚔</h1>
+
+<input type="email" id="email" placeholder="Email">
+
+<div class="password-box">
+  <input type="password" id="senha" placeholder="Senha">
+  <span class="eye" onclick="toggleSenha('senha')">👁</span>
+</div>
+
+<div class="password-box" id="confirmBox" style="display:none;">
+  <input type="password" id="confirmarSenha" placeholder="Confirmar Senha">
+  <span class="eye" onclick="toggleSenha('confirmarSenha')">👁</span>
+</div>
+
+<button onclick="acao()">Entrar</button>
+
+<div class="toggle" onclick="trocarModo()">
+Criar conta
+</div>
+
+<div id="mensagem" class="msg"></div>
+
+</div>
+
+<script>
+
+let modoCadastro = false;
+
+function trocarModo(){
+modoCadastro = !modoCadastro;
+
+document.querySelector("button").innerText =
+modoCadastro ? "Criar Conta" : "Entrar";
+
+document.querySelector(".toggle").innerText =
+modoCadastro ? "Já tenho conta" : "Criar conta";
+
+document.getElementById("confirmBox").style.display =
+modoCadastro ? "block" : "none";
+
+document.getElementById("mensagem").innerText="";
+}
+
+function toggleSenha(id){
+let campo = document.getElementById(id);
+campo.type = campo.type === "password" ? "text" : "password";
+}
+
+function acao(){
+
+let email = document.getElementById("email").value.trim();
+let senha = document.getElementById("senha").value;
+let confirmar = document.getElementById("confirmarSenha").value;
+
+if(!email || !senha){
+mostrarErro("Preencha todos os campos.");
+return;
+}
+
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+if(modoCadastro){
+
+if(senha !== confirmar){
+mostrarErro("As senhas não são iguais!");
+return;
+}
+
+if(usuarios.find(u => u.email === email)){
+mostrarErro("Email já cadastrado!");
+return;
+}
+
+usuarios.push({email, senha});
+localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+mostrarSucesso("Conta criada com sucesso!");
+setTimeout(()=> location.reload(),1500);
+
+}else{
+
+let usuario = usuarios.find(u => u.email === email && u.senha === senha);
+
+if(!usuario){
+mostrarErro("Email ou senha incorretos.");
+return;
+}
+
+localStorage.setItem("usuarioLogado", email);
+window.location.href = "index.html";
+}
+
+}
+
+function mostrarErro(txt){
+let el = document.getElementById("mensagem");
+el.className="msg erro";
+el.innerText=txt;
+}
+
+function mostrarSucesso(txt){
+let el = document.getElementById("mensagem");
+el.className="msg sucesso";
+el.innerText=txt;
+}
+
+</script>
+
+</body>
+</html>
