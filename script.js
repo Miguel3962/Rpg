@@ -4,6 +4,7 @@ let nivel = 1;
 let xp = 0;
 let xpMax = 100;
 let monstrosDerrotados = 0;
+let batalhaAtiva = false;
 
 let forca = 5;
 let inteligencia = 5;
@@ -19,6 +20,8 @@ let vidaJogadorMax = 100;
 let inventario = [];
 let pets = [];
 let itensConsumiveis = [];
+
+
 
 // ================= MONSTRO =================
 let monstroVida = 0;
@@ -120,278 +123,369 @@ document.querySelectorAll(".tela")
 document.getElementById(id).classList.add("ativa");
 }
 
+function gerarLojaFixa(){
+
+let div = document.getElementById("lojaFixa");
+
+div.innerHTML = `
+
+<div class="loja-item">
+
+<div>
+<div class="loja-nome">❤️ Poção de Vida</div>
+<div class="loja-preco">35 ouro</div>
+</div>
+
+<button class="btn-comprar" onclick="comprarItemFixo('vida')">
+Comprar
+</button>
+
+</div>
+
+
+<div class="loja-item">
+
+<div>
+<div class="loja-nome">⚡ Poção de Energia</div>
+<div class="loja-preco">35 ouro</div>
+</div>
+
+<button class="btn-comprar" onclick="comprarItemFixo('energia')">
+Comprar
+</button>
+
+</div>
+
+`;
+
+}
+function mostrarMensagem(texto){
+
+let msg = document.getElementById("mensagemCompra");
+
+msg.innerText = texto;
+
+msg.classList.add("mostrar");
+
+setTimeout(()=>{
+msg.classList.remove("mostrar");
+},2000);
+
+}
+function comprarItemFixo(tipo){
+if(ouro < 35){
+alert("Ouro insuficiente!");
+return;
+}
+
+ouro -= 35;
+
+let item = {};
+
+if(tipo === "vida"){
+
+item = {
+nome:"❤️ Poção de Vida",
+tipo:"cura",
+valor:40
+};
+
+}
+
+if(tipo === "energia"){
+
+item = {
+nome:"⚡ Poção de Energia",
+tipo:"energia",
+valor:40
+};
+
+}
+
+itensConsumiveis.push(item);
+
+mostrarMensagem("🛒 Você comprou " + item.nome + "!");
+atualizarBolsa();
+atualizarTela();
+
+}
 // ================= LEVEL =================
 function verificarLevelUp(){
-if(xp>=xpMax){
-xp-=xpMax;
+
+if(xp >= xpMax){
+
+xp -= xpMax;
 nivel++;
-xpMax+=50;
-alert("👑 LEVEL UP!");
+xpMax += 50;
+
+narrar("👑 LEVEL UP!");
+
+atualizarRanking();
+
 }
+
 }
 
 // ================= MONSTRO =================
 function gerarMonstro(){
 
-if(monstroVida>0){
+// se já tiver monstro vivo
+if(monstroVida > 0){
 narrar("⚔ Termine o combate atual!");
 return;
 }
 
-// dificuldade baseada em quantos já matou
+// dificuldade
 let dificuldade = Math.floor(monstrosDerrotados / 5);
 
 let monstrosBase = [
 
-{
-nome:"Slime",
-vida:30,
-dano:3,
-imagem:"imagem/Slime.png"
-},
-
-{
-nome:"Goblin",
-vida:50,
-dano:6,
-imagem:"imagem/Goblin.png"
-},
-
-{
-nome:"Orc",
-vida:80,
-dano:10,
-imagem:"imagem/GoblinG.png"
-},
-
-{
-nome:"Cavaleiro Sombrio",
-vida:130,
-dano:15,
-imagem:"imagem/Soldado.png"
-},
-
-{
-nome:"Dragão Jovem",
-vida:200,
-dano:25,
-imagem:"imagem/DragaoMal.png"
-}
+{nome:"Slime",vida:30,dano:3,imagem:"imagem/Slime.png"},
+{nome:"Goblin",vida:50,dano:6,imagem:"imagem/Goblin.png"},
+{nome:"Orc",vida:80,dano:10,imagem:"imagem/GoblinG.png"},
+{nome:"Cavaleiro Sombrio",vida:130,dano:15,imagem:"imagem/Soldado.png"},
+{nome:"Dragão Jovem",vida:200,dano:25,imagem:"imagem/DragaoMal.png"}
 
 ];
 
-// BOSS A CADA 10
+// boss
 if((monstrosDerrotados + 1) % 10 === 0){
 
 monstroNome = "👑 BOSS - Senhor das Trevas";
-monstroVidaMax = 400 + (monstrosDerrotados*5);
+monstroVidaMax = 400 + monstrosDerrotados * 5;
 monstroVida = monstroVidaMax;
 monstroDano = 35;
 
-let img = document.getElementById("imgMonstro");
-
-img.src = "Boss.png";
-
-// 🔥 se der erro carrega padrão
-img.onerror = function(){
-this.src = "imagem/padrao.png";
-};
+document.getElementById("imgMonstro").src = "Boss.png";
 
 narrar("🔥 Um BOSS apareceu!");
-}
-else{
 
-let tier = Math.min(dificuldade, monstrosBase.length-1);
+}else{
+
+let tier = Math.min(dificuldade, monstrosBase.length - 1);
 let m = monstrosBase[tier];
-let img = document.getElementById("imgMonstro");
-img.src = m.imagem;
 
 monstroNome = m.nome;
-monstroVidaMax = m.vida + (dificuldade*20);
+monstroVidaMax = m.vida + dificuldade * 20;
 monstroVida = monstroVidaMax;
-monstroDano = m.dano + (dificuldade*3);
+monstroDano = m.dano + dificuldade * 3;
+
+document.getElementById("imgMonstro").src = m.imagem;
 
 narrar("👀 Um " + monstroNome + " apareceu!");
 }
 
-document.getElementById("monstroNome").innerText=monstroNome;
+document.getElementById("monstroNome").innerText = monstroNome;
+
+batalhaAtiva = true;
+
 atualizarMonstro();
-// trocar imagem
-let img = document.getElementById("imgMonstro");
-
-if(imagensMonstros[monstroNome]){
-img.src = imagensMonstros[monstroNome];
-}
 }
 
+function atualizarRanking(){
+
+let titulo = "🌱 Novato";
+
+if(nivel >= 5) titulo = "🌟 Aventureiro";
+if(nivel >= 10) titulo = "🗡 Guerreiro";
+if(nivel >= 20) titulo = "⚔ Cavaleiro";
+if(nivel >= 35) titulo = "🛡 Campeão";
+if(nivel >= 50) titulo = "👑 Lenda";
+if(nivel >= 75) titulo = "⚡ Mito";
+if(nivel >= 100) titulo = "🔥 Deus da Guerra";
+
+document.getElementById("nome").innerText = titulo;
+}
 function atacar(){
 
-if(monstroVida<=0){
-narrar("⚠ Nenhum monstro.");
+if(monstroVida <= 0){
+narrar("⚠ Procure um monstro primeiro.");
 return;
 }
 
-if(energia<5){
+// verificar energia
+if(energia < 5){
 narrar("⚡ Sem energia!");
 return;
 }
 
-energia-=5;
+energia -= 5;
 
-/* ===== ESQUIVA ===== */
+// ===== DANO DO JOGADOR =====
 
-let esquivaPlayer = Math.random() < (carisma*0.01);
-let esquivaMonstro = Math.random() < 0.10;
+let dano = Math.floor(forca * 4 + Math.random() * 6);
 
-/* ===== DANO PLAYER ===== */
+monstroVida -= dano;
 
-let danoBase = forca*4 + nivel*2;
-let variacao = Math.random()*5;
+if(monstroVida < 0) monstroVida = 0;
 
-let dano = Math.floor(danoBase + variacao);
+narrar("⚔ Você causou " + dano + " de dano.");
 
-// nunca deixar dano baixo se jogador forte
-dano = Math.max(dano, forca*2);
+// ===== MONSTRO MORREU =====
 
-let critico = Math.random() < (0.10 + inteligencia*0.002);
+if(monstroVida <= 0){
 
-if(critico){
-dano*=2;
-narrar("💥 CRÍTICO!");
-}
-
-if(!esquivaMonstro){
-
-monstroVida-=dano;
-if(monstroVida<0) monstroVida=0;
-
-narrar(
-"⚔ Você causou "+dano+
-" dano | Vida do monstro: "+
-monstroVida+"/"+monstroVidaMax
-);
-
-}else{
-narrar("👹 O monstro ESQUIVOU!");
-}
-
-/* ===== ATAQUE MONSTRO ===== */
-
-if(monstroVida>0){
-
-if(!esquivaPlayer){
-
-let danoRecebido =
-Math.floor(monstroDano + Math.random()*5);
-
-vidaJogador-=danoRecebido;
-
-narrar(
-"🩸 Você recebeu "+danoRecebido+
-" dano | Sua vida: "+
-vidaJogador+"/"+vidaJogadorMax
-);
-
-}else{
-narrar("✨ Você ESQUIVOU do ataque!");
-}
-
-if(vidaJogador<=0){
-
-narrar("💀 Você morreu...");
-vidaJogador=vidaJogadorMax;
-narrar("🔄 A aventura recomeçou...");
-// RESET TOTAL DA PROGRESSÃO
-monstrosDerrotados = 0;
-nivel = 1;
-xp = 0;
-xpMax = 100;
-vidaJogador = vidaJogadorMax;
-monstroVida = 0;
-monstroVidaMax = 0;
-monstroNome = "";
-document.getElementById("monstroNome").innerText="Nenhum monstro";
-ouro=Math.max(0,ouro-30);
-
-narrar("☠ Perdeu 30 ouro.");
-}
-
-
-}else{
+batalhaAtiva = false;
 
 monstrosDerrotados++;
 
-// SE FOR BOSS
+let ouroGanho = 20 + Math.floor(Math.random()*20);
+let xpGanho = 30;
+
+ouro += ouroGanho;
+xp += xpGanho;
+
+narrar("🏆 Monstro derrotado!");
+narrar("💰 +" + ouroGanho + " ouro");
+narrar("✨ +" + xpGanho + " XP");
+
 if(monstroNome.includes("BOSS")){
+
 dropBoss();
+
+// reinicia ciclo
+monstrosDerrotados = 0;
+
+narrar("🌍 O mundo foi purificado! Novos monstros surgirão.");
+
 }
 
-let recompensaOuro=60+(monstrosDerrotados*5);
-let recompensaXP=50+(monstrosDerrotados*5);
+// limpar monstro
+monstroVida = 0;
+monstroVidaMax = 0;
+monstroNome = "";
 
-ouro+=recompensaOuro;
-xp+=recompensaXP;
-
-narrar(
-"🏆 Vitória! +"+
-recompensaOuro+" ouro | +"+
-recompensaXP+" XP"
-);
+document.getElementById("imgMonstro").src = "";
+document.getElementById("monstroNome").innerText = "Nenhum monstro";
 
 verificarLevelUp();
-}
 
 atualizarTela();
 atualizarMonstro();
+
+return;
+}
+
+// ===== ATAQUE DO MONSTRO =====
+
+let danoRecebido = Math.floor(monstroDano + Math.random()*5);
+
+vidaJogador -= danoRecebido;
+
+narrar("🩸 Você recebeu " + danoRecebido + " de dano.");
+
+// ===== JOGADOR MORREU =====
+
+if(vidaJogador <= 0){
+
+narrar("💀 Você morreu...");
+
+vidaJogador = vidaJogadorMax;
+
+// reinicia ciclo de monstros
+monstrosDerrotados = 0;
+
+// encerra batalha
+batalhaAtiva = false;
+
+monstroVida = 0;
+monstroVidaMax = 0;
+monstroNome = "";
+
+document.getElementById("imgMonstro").src = "";
+document.getElementById("monstroNome").innerText = "Nenhum monstro";
+
+ouro = Math.max(0, ouro - 30);
+
+narrar("💰 Perdeu 30 ouro.");
+narrar("🔄 A aventura recomeçou.");
+
+atualizarTela();
+atualizarMonstro();
+
+return;
+}
+
+// atualizar interface
+atualizarTela();
+atualizarMonstro();
+
 }
 // ================= LOJA =================
 function gerarLoja(){
 
-let hoje=new Date().toLocaleDateString();
-if(dataLoja===hoje) return;
-dataLoja=hoje;
+let hoje = new Date().toDateString();
 
-let itens=[
+let lojaSalva = JSON.parse(localStorage.getItem("lojaDia"));
+
+if(lojaSalva && lojaSalva.data === hoje){
+
+lojaHoje = lojaSalva.itens;
+mostrarLoja();
+return;
+
+}
+
+let itens = [
 
 {nome:"Espada +2 Força", nomeLimpo:"Espada", tipo:"forca", valor:2, preco:50},
-
 {nome:"Livro +2 Inteligência", nomeLimpo:"Livro", tipo:"inteligencia", valor:2, preco:50},
-
-{nome:"Anel +2 Carisma", nomeLimpo:"Anel", tipo:"carisma", valor:2, preco:50},
-
-{nome:"Poção de Vida", nomeLimpo:"Poção", tipo:"cura", valor:40, preco:35},
-
-{nome:"Poção Grande", nomeLimpo:"Poção Grande", tipo:"cura", valor:80, preco:70}
+{nome:"Anel +2 Carisma", nomeLimpo:"Anel", tipo:"carisma", valor:2, preco:50}
 
 ];
 
-lojaHoje=[];
+lojaHoje = [];
+
 for(let i=0;i<3;i++){
-lojaHoje.push(itens[Math.floor(Math.random()*itens.length)]);
+
+let item = {...itens[Math.floor(Math.random()*itens.length)]};
+
+item.qtd = Math.floor(Math.random()*5) + 1;
+
+
+lojaHoje.push(item);
+
 }
+
+localStorage.setItem("lojaDia",
+JSON.stringify({
+data:hoje,
+itens:lojaHoje
+}));
 
 mostrarLoja();
 }
 
 function mostrarLoja(){
 
-let div=document.getElementById("itensLoja");
-if(!div) return;
-
-div.innerHTML="";
+let div = document.getElementById("itensLoja");
+div.innerHTML = "";
 
 lojaHoje.forEach((item,index)=>{
-let botao=document.createElement("button");
-botao.innerText=item.nome+" - "+item.preco+" ouro";
-botao.onclick=()=>comprarItem(index);
-div.appendChild(botao);
-div.appendChild(document.createElement("br"));
+
+div.innerHTML += `
+<div class="loja-item">
+
+<div>
+<div class="loja-nome">${item.nome} (x${item.qtd})</div>
+<div class="loja-preco">${item.preco} ouro</div>
+</div>
+
+<button class="btn-comprar" onclick="comprarItem(${index})">
+Comprar
+</button>
+
+</div>
+`;
+
 });
+
 }
 
 function comprarItem(index){
 
 let item = lojaHoje[index];
+mostrarMensagem("🛒 Você comprou " + item.nome + "!");
 
 if(ouro < item.preco){
 alert("❌ Ouro insuficiente!");
@@ -434,6 +528,13 @@ break;
 
 narrar("⚔ Equipou "+item.nome);
 }
+item.qtd--;
+
+if(item.qtd <= 0){
+lojaHoje.splice(index,1);
+}
+
+mostrarLoja();
 
 atualizarInventario();
 atualizarMochila();
@@ -539,6 +640,7 @@ return;
 }
 
 ouro-=100;
+
 
 let raridade=gerarRaridade();
 let pet=gerarPet(raridade);
@@ -723,6 +825,26 @@ document.getElementById("vidaMonstroBar").style.width=
 (monstroVida/monstroVidaMax*100)+"%";
 }
 
+function atualizarMonstro(){
+
+let txt = document.getElementById("vidaMonstroTexto");
+let bar = document.getElementById("vidaMonstroBar");
+
+if(monstroVidaMax <= 0){
+
+txt.innerText = "0 / 0";
+bar.style.width = "0%";
+return;
+
+}
+
+txt.innerText = monstroVida + " / " + monstroVidaMax;
+
+bar.style.width =
+(monstroVida / monstroVidaMax * 100) + "%";
+
+}
+
 // ================= GRÁFICO =================
 function desenharGrafico(){
 
@@ -740,7 +862,7 @@ let valores=[forca,inteligencia,carisma,nivel];
 let labels=["ATK","INT","CAR","LV"];
 
 let total=valores.length;
-let max=20;
+let max = Math.max(forca, inteligencia, carisma, nivel, 20);
 
 let cx=largura/2;
 let cy=altura/2;
@@ -851,22 +973,38 @@ div.appendChild(btn);
 
 function usarItem(index){
 
-let item=itensConsumiveis[index];
+let item = itensConsumiveis[index];
 if(!item) return;
 
-vidaJogador+=item.valor;
+// POÇÃO DE VIDA
+if(item.tipo === "cura"){
 
-if(vidaJogador>vidaJogadorMax)
-vidaJogador=vidaJogadorMax;
+vidaJogador += item.valor;
 
-narrar("❤️ Curou "+item.valor+" HP");
+if(vidaJogador > vidaJogadorMax)
+vidaJogador = vidaJogadorMax;
+
+narrar("❤️ Curou " + item.valor + " HP");
+
+}
+
+// POÇÃO DE ENERGIA
+if(item.tipo === "energia"){
+
+energia += item.valor;
+
+if(energia > energiaMax)
+energia = energiaMax;
+
+narrar("⚡ Recuperou " + item.valor + " de energia");
+
+}
 
 itensConsumiveis.splice(index,1);
 
 atualizarBolsa();
 atualizarTela();
 }
-
 // ================= START =================
 carregarJogo();
 gerarLoja();
@@ -874,3 +1012,5 @@ atualizarInventario();
 atualizarPets();
 atualizarMochila();
 atualizarTela();
+gerarLoja();
+gerarLojaFixa();
