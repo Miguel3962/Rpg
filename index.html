@@ -7,12 +7,11 @@
 <link rel="stylesheet" href="style.css">
 
 <script>
-/* 🔐 BLOQUEIO DE LOGIN */
-  /*
+/* 🔐 BLOQUEIO DE LOGIN 
 if(!localStorage.getItem("usuarioLogado")){
   window.location.href = "login.html";
 }
-  */
+*/
 </script>
 
 </head>
@@ -127,6 +126,8 @@ if(!localStorage.getItem("usuarioLogado")){
 <div id="loja" class="tela">
 <h3>🏪 Loja do Dia</h3>
 <div id="itensLoja"></div>
+<h3>🏪 Loja Fixa</h3>
+<div id="lojaFixa"></div>
 </div>
 
 <!-- MOCHILA -->
@@ -155,19 +156,18 @@ if(!localStorage.getItem("usuarioLogado")){
 /* 👤 MOSTRAR USUÁRIO 
 document.getElementById("usuarioTopo").innerText =
 "👤 " + localStorage.getItem("usuarioLogado");
-*/
+
 /* 🚪 LOGOUT 
 function logout(){
 localStorage.removeItem("usuarioLogado");
 window.location.href = "login.html";
-}*/
+}
+*/
+
 
 </script>
 
 <script src="script.js"></script>
-
+<div id="mensagemCompra" class="msg-compra"></div>
 </body>
-
 </html>
-
-
